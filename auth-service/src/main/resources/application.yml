@@ -1,0 +1,72 @@
+spring:
+  application:
+    name: auth-service
+  profiles:
+    default: local
+  datasource:
+    url: jdbc:mysql://localhost:3307/parkease_auth?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: parkease_user
+    password: parkease_password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+    show-sql: false
+  mvc:
+    throw-exception-if-no-handler-found: true
+
+server:
+  port: 8081
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
+    hostname: auth-service
+
+jwt:
+  secret: "2dEC87cE0KSPZmT1nH4+T5FaB35+6+F/omeu3Qlxnvg="
+  expiration: 86400000
+  refresh:
+    expiration: 604800000
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+  api-docs:
+    path: /v3/api-docs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+
+app:
+  google:
+    client-id: "356169181305-fu3c7b7mk6utie1fmoc5hkr3qarqii59.apps.googleusercontent.com"
+
+logging:
+  level:
+    com.parkease: INFO
+    org.springframework.security: WARN
+    org.springframework.web: WARN
+    org.hibernate.SQL: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
