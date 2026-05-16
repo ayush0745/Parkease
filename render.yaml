@@ -1,0 +1,239 @@
+services:
+  # ── Infrastructure ──────────────────────────────────────────────────────────
+
+  # Redis (Managed)
+  - type: redis
+    name: parkease-redis
+    plan: free # Change if needed
+    ipAllowList: [] # Accessible only within the Render network
+
+  # Eureka Server (Private Service)
+  - type: pserv
+    name: eureka-server
+    env: docker
+    dockerfilePath: ./discovery-server/Dockerfile
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: docker
+
+  # Config Server (Private Service)
+  - type: pserv
+    name: config-server
+    env: docker
+    dockerfilePath: ./config-server/Dockerfile
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: docker,native
+      - key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+        value: http://eureka-server:8761/eureka/
+
+  # ── Edge Service (Public) ───────────────────────────────────────────────────
+
+  # API Gateway (Web Service)
+  - type: web
+    name: api-gateway
+    env: docker
+    dockerfilePath: ./api-gateway/Dockerfile
+    ports:
+      - port: 8080
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: docker
+      - key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+        value: http://eureka-server:8761/eureka/
+      - key: JWT_SECRET
+        sync: false # You will fill this on Render
+
+  # ── Business Services (Private) ─────────────────────────────────────────────
+
+  # Auth Service
+  - type: pserv
+    name: auth-service
+    env: docker
+    dockerfilePath: ./auth-service/Dockerfile
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: docker
+      - key: SPRING_DATASOURCE_URL
+        sync: false # You will fill this on Render (e.g., jdbc:mysql://host:port/db)
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false # You will fill this on Render
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false # You will fill this on Render
+      - key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+        value: http://eureka-server:8761/eureka/
+      - key: SPRING_RABBITMQ_HOST
+        sync: false # You will fill this on Render
+      - key: SPRING_RABBITMQ_PORT
+        value: "5672"
+      - key: SPRING_RABBITMQ_USERNAME
+        sync: false # You will fill this on Render
+      - key: SPRING_RABBITMQ_PASSWORD
+        sync: false # You will fill this on Render
+      - key: SPRING_RABBITMQ_VIRTUAL_HOST
+        sync: false # You will fill this on Render
+
+  # Parking Lot Service
+  - type: pserv
+    name: parking-lot-service
+    env: docker
+    dockerfilePath: ./parking-lot-service/Dockerfile
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: docker
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: SPRING_DATA_REDIS_HOST
+        value: parkease-redis
+      - key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+        value: http://eureka-server:8761/eureka/
+
+  # Spot Service
+  - type: pserv
+    name: spot-service
+    env: docker
+    dockerfilePath: ./spot-service/Dockerfile
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: docker
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+        value: http://eureka-server:8761/eureka/
+
+  # Booking Service
+  - type: pserv
+    name: booking-service
+    env: docker
+    dockerfilePath: ./booking-service/Dockerfile
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: docker
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: SPRING_RABBITMQ_HOST
+        sync: false
+      - key: SPRING_RABBITMQ_PORT
+        value: "5672"
+      - key: SPRING_RABBITMQ_USERNAME
+        sync: false
+      - key: SPRING_RABBITMQ_PASSWORD
+        sync: false
+      - key: SPRING_RABBITMQ_VIRTUAL_HOST
+        sync: false
+      - key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+        value: http://eureka-server:8761/eureka/
+
+  # Payment Service
+  - type: pserv
+    name: payment-service
+    env: docker
+    dockerfilePath: ./payment-service/Dockerfile
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: docker
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: SPRING_RABBITMQ_HOST
+        sync: false
+      - key: SPRING_RABBITMQ_PORT
+        value: "5672"
+      - key: SPRING_RABBITMQ_USERNAME
+        sync: false
+      - key: SPRING_RABBITMQ_PASSWORD
+        sync: false
+      - key: SPRING_RABBITMQ_VIRTUAL_HOST
+        sync: false
+      - key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+        value: http://eureka-server:8761/eureka/
+      - key: RAZORPAY_KEY_ID
+        value: rzp_test_SmXLLXzt0TRU4N
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+
+  # Vehicle Service
+  - type: pserv
+    name: vehicle-service
+    env: docker
+    dockerfilePath: ./vehicle-service/Dockerfile
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: docker
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+        value: http://eureka-server:8761/eureka/
+
+  # Notification Service
+  - type: pserv
+    name: notification-service
+    env: docker
+    dockerfilePath: ./notification-service/Dockerfile
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: docker
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: SPRING_RABBITMQ_HOST
+        sync: false
+      - key: SPRING_RABBITMQ_PORT
+        value: "5672"
+      - key: SPRING_RABBITMQ_USERNAME
+        sync: false
+      - key: SPRING_RABBITMQ_PASSWORD
+        sync: false
+      - key: SPRING_RABBITMQ_VIRTUAL_HOST
+        sync: false
+      - key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+        value: http://eureka-server:8761/eureka/
+
+  # Analytics Service
+  - type: pserv
+    name: analytics-service
+    env: docker
+    dockerfilePath: ./analytics-service/Dockerfile
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: docker
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: SPRING_RABBITMQ_HOST
+        sync: false
+      - key: SPRING_RABBITMQ_PORT
+        value: "5672"
+      - key: SPRING_RABBITMQ_USERNAME
+        sync: false
+      - key: SPRING_RABBITMQ_PASSWORD
+        sync: false
+      - key: SPRING_RABBITMQ_VIRTUAL_HOST
+        sync: false
+      - key: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+        value: http://eureka-server:8761/eureka/
