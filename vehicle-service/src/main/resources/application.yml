@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: vehicle-service
+  profiles:
+    default: local
+  datasource:
+    url: jdbc:mysql://localhost:3307/parkease_vehicles?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: parkease_user
+    password: parkease_password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+    show-sql: false
+
+server:
+  port: 8086
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
+    hostname: localhost
+
+jwt:
+  secret: "2dEC87cE0KSPZmT1nH4+T5FaB35+6+F/omeu3Qlxnvg="
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
