@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: config-server
+  profiles:
+    default: local
+  cloud:
+    config:
+      server:
+        git:
+          uri: file://${user.home}/config-repo
+          clone-on-start: false
+          default-label: main
+
+server:
+  port: 8888
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    preferIpAddress: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
