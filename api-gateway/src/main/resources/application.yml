@@ -89,12 +89,12 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
   instance:
     preferIpAddress: true
 
 jwt:
-  secret: "2dEC87cE0KSPZmT1nH4+T5FaB35+6+F/omeu3Qlxnvg="
+  secret: ${JWT_SECRET:2dEC87cE0KSPZmT1nH4+T5FaB35+6+F/omeu3Qlxnvg=}
   expiration: 86400000
 
 management:

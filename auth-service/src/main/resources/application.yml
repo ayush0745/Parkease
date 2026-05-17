@@ -4,15 +4,15 @@ spring:
   profiles:
     default: local
   datasource:
-    url: jdbc:mysql://localhost:3307/parkease_auth?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: parkease_user
-    password: parkease_password
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3307/parkease_auth?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
+    username: ${SPRING_DATASOURCE_USERNAME:parkease_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:parkease_password}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 10
       minimum-idle: 2
       connection-timeout: 30000
-      idle-timeout: 600000
+      idle-timeout: 604800
       max-lifetime: 1800000
   jpa:
     hibernate:
@@ -24,6 +24,11 @@ spring:
     show-sql: false
   mvc:
     throw-exception-if-no-handler-found: true
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
 
 server:
   port: 8081
@@ -31,13 +36,13 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
   instance:
     preferIpAddress: true
     hostname: auth-service
 
 jwt:
-  secret: "2dEC87cE0KSPZmT1nH4+T5FaB35+6+F/omeu3Qlxnvg="
+  secret: ${JWT_SECRET:2dEC87cE0KSPZmT1nH4+T5FaB35+6+F/omeu3Qlxnvg=}
   expiration: 86400000
   refresh:
     expiration: 604800000
