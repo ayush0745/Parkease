@@ -66,7 +66,7 @@ spring:
         - JwtAuthenticationFilter
       globalcors:
         corsConfigurations:
-          '[/**]':
+          "[/**]":
             allowedOrigins:
               - "http://localhost:4200"
             allowedMethods:
@@ -89,7 +89,7 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+      defaultZone: ${EUREKA_SERVER_URL:https://parkease-yml3.onrender.com/eureka/}
   instance:
     preferIpAddress: true
 
@@ -101,7 +101,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: '*'
+        include: "*"
   endpoint:
     health:
       show-details: always
