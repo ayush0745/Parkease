@@ -69,6 +69,7 @@ spring:
           "[/**]":
             allowedOrigins:
               - "http://localhost:4200"
+              - "https://sweet-alfajores-677899.netlify.app"
             allowedMethods:
               - GET
               - POST
