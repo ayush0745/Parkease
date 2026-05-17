@@ -1,0 +1,50 @@
+services:
+  # 1. Discovery Server (Eureka)
+  - type: web
+    name: discovery-server
+    env: docker
+    rootDir: discovery-server
+    dockerfilePath: Dockerfile
+    plan: free
+
+  # 2. Auth Service
+  - type: web
+    name: auth-service
+    env: docker
+    rootDir: auth-service
+    dockerfilePath: Dockerfile
+    plan: free
+    envVars:
+      - key: EUREKA_SERVER_URL
+        value: "https://parkease-yml3.onrender.com/eureka/"
+      - key: SPRING_DATASOURCE_URL
+        value: "jdbc:mysql://yamabiko.proxy.rlwy.net:56304/railway"
+      - key: SPRING_DATASOURCE_USERNAME
+        value: "root"
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: "AMvGGuZJFPFVBphXOeitlHfaFgouhkIC"
+      - key: SPRING_RABBITMQ_HOST
+        value: "capybara.lmq.cloudamqp.com"
+      - key: SPRING_RABBITMQ_PORT
+        value: "5671" # Using 5671 for AMQPS (SSL)
+      - key: SPRING_RABBITMQ_USERNAME
+        value: "tjvjuwgb"
+      - key: SPRING_RABBITMQ_PASSWORD
+        value: "DEgx8gT_T0CwAhxeR2DihjHlcf3J4JJJ"
+      - key: SPRING_RABBITMQ_SSL_ENABLED
+        value: "true"
+      - key: JWT_SECRET
+        value: "2dEC87cE0KSPZmT1nH4+T5FaB35+6+F/omeu3Qlxnvg="
+
+  # 3. API Gateway
+  - type: web
+    name: api-gateway
+    env: docker
+    rootDir: api-gateway
+    dockerfilePath: Dockerfile
+    plan: free
+    envVars:
+      - key: EUREKA_SERVER_URL
+        value: "https://parkease-yml3.onrender.com/eureka/"
+      - key: JWT_SECRET
+        value: "2dEC87cE0KSPZmT1nH4+T5FaB35+6+F/omeu3Qlxnvg="

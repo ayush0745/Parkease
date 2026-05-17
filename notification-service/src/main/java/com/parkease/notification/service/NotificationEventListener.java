@@ -47,9 +47,12 @@ public class NotificationEventListener {
         if (lotId != null && lotId > 0) {
             try {
                 org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
-                String url = "http://localhost:8082/api/v1/lots/" + lotId;
-                @SuppressWarnings("unchecked")
-                Map<String, Object> lot = restTemplate.getForObject(url, Map.class);
+                Map<String, Object> lot = null;
+                try {
+                    lot = restTemplate.getForObject("http://parking-lot-service:8082/api/v1/lots/" + lotId, Map.class);
+                } catch (Exception e) {
+                    lot = restTemplate.getForObject("http://localhost:8082/api/v1/lots/" + lotId, Map.class);
+                }
                 if (lot != null && lot.containsKey("managerId")) {
                     Long managerId = toLong(lot.get("managerId"));
                     String lotName = String.valueOf(lot.getOrDefault("name", "Parking Lot #" + lotId));
@@ -192,9 +195,13 @@ public class NotificationEventListener {
                 // Notify all ADMIN users via auth-service internal endpoint
                 try {
                     org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
-                    String url = "http://localhost:8081/api/v1/auth/internal/users-by-role?role=ADMIN";
-                    @SuppressWarnings("unchecked")
-                    java.util.List<java.util.Map<String, Object>> admins = restTemplate.getForObject(url, java.util.List.class);
+                    java.util.List<java.util.Map<String, Object>> admins = null;
+                    try {
+                        admins = restTemplate.getForObject("http://auth-service:8081/api/v1/auth/internal/users-by-role?role=ADMIN", java.util.List.class);
+                    } catch (Exception e) {
+                        admins = restTemplate.getForObject("http://localhost:8081/api/v1/auth/internal/users-by-role?role=ADMIN", java.util.List.class);
+                    }
+                    
                     if (admins != null) {
                         for (java.util.Map<String, Object> admin : admins) {
                             Long adminId = toLong(admin.get("userId"));
@@ -230,6 +237,32 @@ public class NotificationEventListener {
                         .relatedId(lotId)
                         .relatedType("LOT")
                         .build());
+                
+                // Fetch manager email and send email
+                try {
+                    org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+                    org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+                    headers.set("X-User-Id", String.valueOf(managerId));
+                    org.springframework.http.HttpEntity<String> entity = new org.springframework.http.HttpEntity<>(headers);
+                    
+                    java.util.Map<String, Object> profile = null;
+                    try {
+                        profile = restTemplate.exchange("http://auth-service:8081/api/v1/auth/profile", org.springframework.http.HttpMethod.GET, entity, java.util.Map.class).getBody();
+                    } catch (Exception e) {
+                        profile = restTemplate.exchange("http://localhost:8081/api/v1/auth/profile", org.springframework.http.HttpMethod.GET, entity, java.util.Map.class).getBody();
+                    }
+                    
+                    if (profile != null && profile.containsKey("email")) {
+                        String managerEmail = String.valueOf(profile.get("email"));
+                        String subject = "✅ Lot Approved - ParkEase";
+                        String body = String.format("Dear Manager,\n\nCongratulations! Your parking lot '%s' has been approved by the admin.\n\nThanks,\nThe ParkEase Team", lotName);
+                        emailService.sendEmail(managerEmail, subject, body);
+                        log.info("Sent lot.approved email to manager #{} ({})", managerId, managerEmail);
+                    }
+                } catch (Exception e) {
+                    log.warn("Failed to send email to manager {}: {}", managerId, e.getMessage());
+                }
+                
                 log.info("Sent lot.approved notification to manager #{}", managerId);
             }
             case "lot.rejected" -> {
@@ -244,6 +277,32 @@ public class NotificationEventListener {
                         .relatedId(lotId)
                         .relatedType("LOT")
                         .build());
+                
+                // Fetch manager email and send email
+                try {
+                    org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+                    org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+                    headers.set("X-User-Id", String.valueOf(managerId));
+                    org.springframework.http.HttpEntity<String> entity = new org.springframework.http.HttpEntity<>(headers);
+                    
+                    java.util.Map<String, Object> profile = null;
+                    try {
+                        profile = restTemplate.exchange("http://auth-service:8081/api/v1/auth/profile", org.springframework.http.HttpMethod.GET, entity, java.util.Map.class).getBody();
+                    } catch (Exception e) {
+                        profile = restTemplate.exchange("http://localhost:8081/api/v1/auth/profile", org.springframework.http.HttpMethod.GET, entity, java.util.Map.class).getBody();
+                    }
+                    
+                    if (profile != null && profile.containsKey("email")) {
+                        String managerEmail = String.valueOf(profile.get("email"));
+                        String subject = "❌ Lot Rejected - ParkEase";
+                        String body = String.format("Dear Manager,\n\nYour parking lot '%s' was rejected. Reason: %s.\n\nPlease update details and resubmit.\n\nThanks,\nThe ParkEase Team", lotName, reason);
+                        emailService.sendEmail(managerEmail, subject, body);
+                        log.info("Sent lot.rejected email to manager #{} ({})", managerId, managerEmail);
+                    }
+                } catch (Exception e) {
+                    log.warn("Failed to send email to manager {}: {}", managerId, e.getMessage());
+                }
+                
                 log.info("Sent lot.rejected notification to manager #{}", managerId);
             }
             default -> log.warn("Unknown lot event type: {}", eventType);

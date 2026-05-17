@@ -1,0 +1,108 @@
+spring:
+  application:
+    name: api-gateway
+  profiles:
+    default: local
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/v1/auth/**
+          filters:
+            - StripPrefix=0
+        - id: parking-lot-service
+          uri: lb://parking-lot-service
+          predicates:
+            - Path=/api/v1/lots/**
+          filters:
+            - StripPrefix=0
+        - id: spot-service
+          uri: lb://spot-service
+          predicates:
+            - Path=/api/v1/spots/**
+          filters:
+            - StripPrefix=0
+        - id: booking-service
+          uri: lb://booking-service
+          predicates:
+            - Path=/api/v1/bookings/**
+          filters:
+            - StripPrefix=0
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/v1/payments/**
+          filters:
+            - StripPrefix=0
+        - id: vehicle-service
+          uri: lb://vehicle-service
+          predicates:
+            - Path=/api/v1/vehicles/**
+          filters:
+            - StripPrefix=0
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/v1/notifications/**
+          filters:
+            - StripPrefix=0
+        - id: analytics-service
+          uri: lb://analytics-service
+          predicates:
+            - Path=/api/v1/analytics/**
+          filters:
+            - StripPrefix=0
+        - id: analytics-admin
+          uri: lb://analytics-service
+          predicates:
+            - Path=/api/v1/admin/**
+          filters:
+            - StripPrefix=0
+      default-filters:
+        - JwtAuthenticationFilter
+      globalcors:
+        corsConfigurations:
+          "[/**]":
+            allowedOrigins:
+              - "http://localhost:4200"
+              - "https://sweet-alfajores-677899.netlify.app"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - PATCH
+              - OPTIONS
+            allowedHeaders: "*"
+            exposedHeaders:
+              - "Authorization"
+            allowCredentials: false
+            maxAge: 3600
+        add-to-simple-url-handler-mapping: true
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER_URL:https://parkease-yml3.onrender.com/eureka/}
+  instance:
+    preferIpAddress: true
+
+jwt:
+  secret: ${JWT_SECRET:2dEC87cE0KSPZmT1nH4+T5FaB35+6+F/omeu3Qlxnvg=}
+  expiration: 86400000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

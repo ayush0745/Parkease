@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: analytics-service
+  datasource:
+    url: jdbc:mysql://mysql:3306/parkease_analytics?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: parkease_user
+    password: parkease_password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+    show-sql: false
+
+server:
+  port: 8088
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    preferIpAddress: true
+    hostname: analytics-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
