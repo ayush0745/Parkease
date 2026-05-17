@@ -4,9 +4,9 @@ spring:
   profiles:
     default: local
   datasource:
-    url: jdbc:mysql://localhost:3307/parkease_notifications?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: parkease_user
-    password: parkease_password
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3307/parkease_notifications?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
+    username: ${SPRING_DATASOURCE_USERNAME:parkease_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:parkease_password}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -17,15 +17,15 @@ spring:
         format_sql: true
     show-sql: false
   rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ayushrathour3122@gmail.com
-    password: nkffcuxxdraiwgci
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:ayushrathour3122@gmail.com}
+    password: ${MAIL_PASSWORD:nkffcuxxdraiwgci}
     from: ${spring.mail.username}
     properties:
       mail:
@@ -46,7 +46,7 @@ eureka:
     hostname: localhost
 
 jwt:
-  secret: "2dEC87cE0KSPZmT1nH4+T5FaB35+6+F/omeu3Qlxnvg="
+  secret: ${JWT_SECRET:2dEC87cE0KSPZmT1nH4+T5FaB35+6+F/omeu3Qlxnvg=}
 
 twilio:
   account-sid: your-account-sid

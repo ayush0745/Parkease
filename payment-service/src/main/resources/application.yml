@@ -6,9 +6,9 @@ spring:
     default: local
 
   datasource:
-    url: jdbc:mysql://localhost:3307/parkease_payments?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: parkease_user
-    password: parkease_password
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3307/parkease_payments?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
+    username: ${SPRING_DATASOURCE_USERNAME:parkease_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:parkease_password}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 10
@@ -32,10 +32,10 @@ spring:
     time-zone: Asia/Kolkata
 
   rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
     listener:
       simple:
         acknowledge-mode: auto
@@ -59,7 +59,7 @@ eureka:
     lease-expiration-duration-in-seconds: 90
 
 jwt:
-  secret: "2dEC87cE0KSPZmT1nH4+T5FaB35+6+F/omeu3Qlxnvg="
+  secret: ${JWT_SECRET:2dEC87cE0KSPZmT1nH4+T5FaB35+6+F/omeu3Qlxnvg=}
 
 stripe:
   api:

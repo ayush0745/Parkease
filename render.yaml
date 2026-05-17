@@ -11,7 +11,7 @@ services:
   - type: pserv
     name: eureka-server
     env: docker
-    dockerfilePath: ./discovery-server/Dockerfile
+    rootDir: discovery-server
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: docker
@@ -20,7 +20,7 @@ services:
   - type: pserv
     name: config-server
     env: docker
-    dockerfilePath: ./config-server/Dockerfile
+    rootDir: config-server
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: docker,native
@@ -33,7 +33,7 @@ services:
   - type: web
     name: api-gateway
     env: docker
-    dockerfilePath: ./api-gateway/Dockerfile
+    rootDir: api-gateway
     ports:
       - port: 8080
     envVars:
@@ -50,7 +50,7 @@ services:
   - type: pserv
     name: auth-service
     env: docker
-    dockerfilePath: ./auth-service/Dockerfile
+    rootDir: auth-service
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: docker
@@ -77,7 +77,7 @@ services:
   - type: pserv
     name: parking-lot-service
     env: docker
-    dockerfilePath: ./parking-lot-service/Dockerfile
+    rootDir: parking-lot-service
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: docker
@@ -96,7 +96,7 @@ services:
   - type: pserv
     name: spot-service
     env: docker
-    dockerfilePath: ./spot-service/Dockerfile
+    rootDir: spot-service
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: docker
@@ -113,7 +113,7 @@ services:
   - type: pserv
     name: booking-service
     env: docker
-    dockerfilePath: ./booking-service/Dockerfile
+    rootDir: booking-service
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: docker
@@ -140,7 +140,7 @@ services:
   - type: pserv
     name: payment-service
     env: docker
-    dockerfilePath: ./payment-service/Dockerfile
+    rootDir: payment-service
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: docker
@@ -171,7 +171,7 @@ services:
   - type: pserv
     name: vehicle-service
     env: docker
-    dockerfilePath: ./vehicle-service/Dockerfile
+    rootDir: vehicle-service
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: docker
@@ -188,7 +188,7 @@ services:
   - type: pserv
     name: notification-service
     env: docker
-    dockerfilePath: ./notification-service/Dockerfile
+    rootDir: notification-service
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: docker
@@ -215,7 +215,7 @@ services:
   - type: pserv
     name: analytics-service
     env: docker
-    dockerfilePath: ./analytics-service/Dockerfile
+    rootDir: analytics-service
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: docker
