@@ -4,9 +4,9 @@ spring:
   profiles:
     default: local
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3307/parkease_auth?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
-    username: ${SPRING_DATASOURCE_USERNAME:parkease_user}
-    password: ${SPRING_DATASOURCE_PASSWORD:parkease_password}
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://autorack.proxy.rlwy.net:37304/railway}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:IitylHxVXNOuGLTFSyNSPijfTQYwjfHk}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 10
