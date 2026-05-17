@@ -34,8 +34,6 @@ services:
     name: api-gateway
     env: docker
     rootDir: api-gateway
-    ports:
-      - port: 8080
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: docker
