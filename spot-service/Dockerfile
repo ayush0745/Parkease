@@ -1,6 +1,13 @@
+# Build stage
+FROM maven:3.8.5-openjdk-17 AS builder
+WORKDIR /app
+COPY . .
+RUN mvn clean package -pl discovery-server -am -DskipTests
+
+# Run stage
 FROM eclipse-temurin:17-jre
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-COPY target/spot-service-*.jar app.jar
-EXPOSE 8083
+COPY --from=builder /app/discovery-server/target/discovery-server-*.jar app.jar
+EXPOSE 8761
 ENTRYPOINT ["java", "-jar", "app.jar"]
